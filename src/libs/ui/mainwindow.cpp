@@ -60,6 +60,7 @@ namespace {
 const char WelcomePageUrl[] = "qrc:///browser/welcome.html";
 const char WelcomePageNoAdUrl[] = "qrc:///browser/welcome-noad.html";
 const char DarkModeCssUrl[] = ":/browser/assets/css/darkmode.css";
+const char DarkModeQssUrl[] = ":/style/darkmode.qss";
 const char HighlightOnNavigateCssUrl[] = ":/browser/assets/css/highlight.css";
 }
 
@@ -803,6 +804,17 @@ void MainWindow::applySettings()
         createTrayIcon();
     else
         removeTrayIcon();
+
+    // Application Style
+    QByteArray qtStyle;
+    if (m_settings->darkModeEnabled) {
+        QScopedPointer<QFile> file(new QFile(DarkModeQssUrl));
+        if (file->open(QIODevice::ReadOnly)) {
+            qtStyle += file->readAll();
+        }
+    }
+
+    setStyleSheet(QLatin1String(qtStyle));
 
     // Content
     QByteArray ba;
